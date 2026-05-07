@@ -16,18 +16,18 @@ resource "random_password" "db" {
 # ── Subnet Group ──────────────────────────────────────────────────────────────
 
 resource "aws_db_subnet_group" "this" {
-  name       = "${var.cluster_name}-rds-subnet-group"
+  name       = "petclinic-${var.environment}-rds-subnet-group"
   subnet_ids = var.subnet_ids
 
   tags = merge(local.common_tags, {
-    Name = "${var.cluster_name}-rds-subnet-group"
+    Name = "petclinic-${var.environment}-rds-subnet-group"
   })
 }
 
 # ── Security Group ────────────────────────────────────────────────────────────
 
 resource "aws_security_group" "rds" {
-  name        = "${var.cluster_name}-rds-sg"
+  name        = "petclinic-${var.environment}-rds-sg"
   description = "Allow MySQL from VPC CIDR and EKS nodes"
   vpc_id      = var.vpc_id
 
@@ -55,17 +55,17 @@ resource "aws_security_group" "rds" {
   }
 
   tags = merge(local.common_tags, {
-    Name = "${var.cluster_name}-rds-sg"
+    Name = "petclinic-${var.environment}-rds-sg"
   })
 }
 
 # ── RDS Instance ──────────────────────────────────────────────────────────────
 
 resource "aws_db_instance" "this" {
-  identifier             = "${var.cluster_name}-mysql"
+  identifier             = "petclinic-${var.environment}-mysql"
   engine                 = "mysql"
   engine_version         = "8.0"
-  instance_class         = "db.t3.micro"
+  instance_class         = var.db_instance_class
   allocated_storage      = 20
   storage_type           = "gp2"
   db_name                = "petclinic"
@@ -78,14 +78,14 @@ resource "aws_db_instance" "this" {
   deletion_protection    = false
 
   tags = merge(local.common_tags, {
-    Name = "${var.cluster_name}-mysql"
+    Name = "petclinic-${var.environment}-mysql"
   })
 }
 
 # ── Secrets Manager ───────────────────────────────────────────────────────────
 
 resource "aws_secretsmanager_secret" "db_credentials" {
-  name                    = "petclinic/db-credentials"
+  name                    = "petclinic/${var.environment}/db-credentials"
   recovery_window_in_days = 0
 
   tags = local.common_tags

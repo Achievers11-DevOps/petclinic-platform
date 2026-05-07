@@ -29,12 +29,16 @@ provider "aws" {
   }
 }
 
+locals {
+  cluster_name = "petclinic-${var.environment}"
+}
+
 # ── VPC ──────────────────────────────────────────────────────────────────────
 
 module "vpc" {
   source = "./modules/vpc"
 
-  cluster_name = var.cluster_name
+  cluster_name = local.cluster_name
   environment  = var.environment
 }
 
@@ -43,7 +47,7 @@ module "vpc" {
 module "eks" {
   source = "./modules/eks"
 
-  cluster_name = var.cluster_name
+  cluster_name = local.cluster_name
   environment  = var.environment
   vpc_id       = module.vpc.vpc_id
   subnet_ids   = module.vpc.public_subnet_ids
@@ -56,12 +60,12 @@ module "eks" {
 module "rds" {
   source = "./modules/rds"
 
-  cluster_name           = var.cluster_name
   environment            = var.environment
   vpc_id                 = module.vpc.vpc_id
   vpc_cidr               = module.vpc.vpc_cidr
   subnet_ids             = module.vpc.public_subnet_ids
   node_security_group_id = module.eks.node_security_group_id
+  db_instance_class      = var.db_instance_class
 
   depends_on = [module.vpc, module.eks]
 }
@@ -73,4 +77,3 @@ module "ecr" {
 
   environment = var.environment
 }
-
