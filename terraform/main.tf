@@ -74,11 +74,3 @@ module "ecr" {
   environment = var.environment
 }
 
-# ── Secrets Manager ───────────────────────────────────────────────────────────
-
-module "secrets" {
-  source = "./modules/secrets"
-
-  cluster_name = var.cluster_name
-  environment  = var.environment
-}
