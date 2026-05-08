@@ -1,10 +1,5 @@
-variable "cluster_name" {
-  description = "EKS cluster name — used in resource names and identifiers"
-  type        = string
-}
-
 variable "environment" {
-  description = "Deployment environment (e.g. production, staging)"
+  description = "Deployment environment"
   type        = string
 }
 
@@ -14,7 +9,7 @@ variable "vpc_id" {
 }
 
 variable "vpc_cidr" {
-  description = "CIDR block of the VPC — used to allow MySQL ingress from all VPC hosts"
+  description = "CIDR block of the VPC"
   type        = string
   default     = "10.0.0.0/16"
 }
@@ -27,4 +22,10 @@ variable "subnet_ids" {
 variable "node_security_group_id" {
   description = "Security group ID of EKS managed nodes — granted ingress on port 3306"
   type        = string
+}
+
+variable "db_instance_class" {
+  description = "RDS instance class"
+  type        = string
+  default     = "db.t4g.micro"
 }

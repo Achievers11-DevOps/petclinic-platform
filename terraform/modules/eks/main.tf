@@ -96,15 +96,16 @@ resource "aws_iam_openid_connect_provider" "this" {
 
 resource "aws_eks_node_group" "this" {
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "${var.cluster_name}-ng"
+  node_group_name = "${var.cluster_name}-nodes"
   node_role_arn   = aws_iam_role.node.arn
   subnet_ids      = var.subnet_ids
-  instance_types  = ["t3.medium"]
+  instance_types  = ["t3.small"]
+  capacity_type   = "ON_DEMAND"
 
   scaling_config {
     desired_size = 2
     min_size     = 1
-    max_size     = 4
+    max_size     = 3
   }
 
   update_config {
@@ -118,12 +119,32 @@ resource "aws_eks_node_group" "this" {
 
 # ── Addons ────────────────────────────────────────────────────────────────────
 
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name = aws_eks_cluster.this.name
+  addon_name   = "vpc-cni"
+
+  tags       = local.common_tags
+  depends_on = [aws_eks_node_group.this]
+
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+}
+
 resource "aws_eks_addon" "kube_proxy" {
   cluster_name = aws_eks_cluster.this.name
   addon_name   = "kube-proxy"
 
   tags       = local.common_tags
   depends_on = [aws_eks_node_group.this]
+
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -132,12 +153,10 @@ resource "aws_eks_addon" "coredns" {
 
   tags       = local.common_tags
   depends_on = [aws_eks_node_group.this]
-}
 
-resource "aws_eks_addon" "ebs_csi" {
-  cluster_name = aws_eks_cluster.this.name
-  addon_name   = "aws-ebs-csi-driver"
-
-  tags       = local.common_tags
-  depends_on = [aws_eks_node_group.this]
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
 }

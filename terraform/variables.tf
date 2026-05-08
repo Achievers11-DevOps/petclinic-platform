@@ -4,21 +4,20 @@ variable "aws_region" {
   default     = "af-south-1"
 }
 
-variable "cluster_name" {
-  description = "Name of the EKS cluster"
-  type        = string
-  default     = "petclinic-eks"
-}
-
 variable "environment" {
-  description = "Deployment environment (e.g. production, staging)"
+  description = "Deployment environment"
   type        = string
-  default     = "production"
 
   validation {
-    condition     = contains(["production", "staging", "development"], var.environment)
-    error_message = "environment must be one of: production, staging, development."
+    condition     = contains(["dev", "prod"], var.environment)
+    error_message = "environment must be one of: dev, prod."
   }
+}
+
+variable "db_instance_class" {
+  description = "RDS instance class"
+  type        = string
+  default     = "db.t4g.micro"
 }
 
 variable "domain" {

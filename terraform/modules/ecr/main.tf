@@ -5,6 +5,19 @@ locals {
     ManagedBy   = "terraform"
   }
 
+  services = [
+    "config-server",
+    "discovery-server",
+    "api-gateway",
+    "customers-service",
+    "vets-service",
+    "visits-service",
+    "genai-service",
+    "admin-server",
+  ]
+
+  repositories = toset([for s in local.services : "petclinic-${var.environment}/${s}"])
+
   lifecycle_policy = jsonencode({
     rules = [
       {
@@ -34,7 +47,7 @@ locals {
 }
 
 resource "aws_ecr_repository" "this" {
-  for_each = toset(var.repositories)
+  for_each = local.repositories
 
   name                 = each.key
   image_tag_mutability = "MUTABLE"

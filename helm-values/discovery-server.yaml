@@ -1,0 +1,17 @@
+image:
+  repository: 118821711881.dkr.ecr.af-south-1.amazonaws.com/petclinic-dev/discovery-server
+  tag: latest
+
+service:
+  port: 8761
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "docker"
+  - name: CONFIG_SERVER_URL
+    value: "http://config-server:8888"
+
+initContainers:
+  - name: wait-for-config-server
+    image: busybox:1.36
+    command: ['sh', '-c', 'until wget -qO- http://config-server:8888/actuator/health; do sleep 5; done']
