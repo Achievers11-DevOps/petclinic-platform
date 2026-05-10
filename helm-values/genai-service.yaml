@@ -1,4 +1,4 @@
 image:
   repository: 118821711881.dkr.ecr.af-south-1.amazonaws.com/spring-petclinic-genai-service
-  tag: "latest"
+  tag: "c6cb014"
   pullPolicy: Always
