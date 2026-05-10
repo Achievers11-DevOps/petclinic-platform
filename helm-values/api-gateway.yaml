@@ -1,4 +1,4 @@
 image:
   repository: 118821711881.dkr.ecr.af-south-1.amazonaws.com/spring-petclinic-api-gateway
-  tag: "c6cb014"
+  tag: "d2eecf1"
   pullPolicy: Always
