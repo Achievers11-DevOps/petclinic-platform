@@ -1,5 +1,5 @@
 image:
-  repository: 118821711881.dkr.ecr.af-south-1.amazonaws.com/petclinic-dev/vets-service
+  repository: 118821711881.dkr.ecr.us-east-1.amazonaws.com/petclinic/vets-service
   tag: latest
 
 service:
@@ -21,7 +21,7 @@ env:
         name: petclinic-db-secret
         key: password
   - name: SPRING_DATASOURCE_URL
-    value: "jdbc:mysql://petclinic-dev-mysql.cp6ymios4vqr.af-south-1.rds.amazonaws.com:3306/petclinic"
+    value: "jdbc:mysql://petclinic-mysql.co38siyqqwll.us-east-1.rds.amazonaws.com:3306/petclinic"
 
 initContainers:
   - name: wait-for-config-server

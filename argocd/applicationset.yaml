@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: petclinic-services
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - service: config-server
+          - service: discovery-server
+          - service: customers-service
+          - service: vets-service
+          - service: visits-service
+          - service: admin-server
+          - service: genai-service
+          - service: api-gateway
+  template:
+    metadata:
+      name: "petclinic-{{service}}"
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Achievers11-DevOps/petclinic-platform.git
+        targetRevision: dev
+        path: helm/petclinic-service
+        helm:
+          valueFiles:
+            - "../../helm-values/dev.yaml"
+            - "../../helm-values/{{service}}.yaml"
+          releaseName: "{{service}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: petclinic
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
